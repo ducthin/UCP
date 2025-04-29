@@ -28,11 +28,16 @@ This document provides guidance for deploying the User Case Point application on
    | MYSQL_URL | Your full MySQL JDBC URL |
    | MYSQL_ROOT_USER | Your MySQL username |
    | MYSQL_ROOT_PASSWORD | Your MySQL password |
-   | PORT | 8080 |
+   | PORT | 10000 |
+   | DATABASE_ENABLED | true |
 
    Note: Make sure your MYSQL_URL includes the necessary parameters: `?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true`
 
-6. Save the settings and deploy your application.
+6. If you need to run the application initially without a database, set:
+   - DATABASE_ENABLED = false (application will start without requiring database connectivity)
+   - SPRING_PROFILES_ACTIVE = disable-database
+
+7. Save the settings and deploy your application.
 
 ## Troubleshooting
 

@@ -13,8 +13,8 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 # Fix the JAR name mismatch between COPY and ENTRYPOINT
 COPY --from=build /app/target/UserCasePoint-0.0.1-SNAPSHOT.jar app.jar
-# Make port dynamic for Render
-ENV PORT=8080
+# Make port dynamic for Render - use Render's default 10000 if not specified
+ENV PORT=10000
 EXPOSE ${PORT}
 # Use consistent JAR name and allow for environment variables to be passed
 # Ensure server.port is set to the same value as the exposed port
