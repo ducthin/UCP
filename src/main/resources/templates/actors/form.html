@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title th:text="${actorDTO.id == null ? 'Add Actor' : 'Edit Actor'}">Actor Form</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1>
+                    <i th:if="${actorDTO.id == null}" class="bi bi-person-plus-fill me-2 text-primary"></i>
+                    <i th:unless="${actorDTO.id == null}" class="bi bi-pencil-fill me-2 text-primary"></i>
+                    <span th:text="${actorDTO.id == null ? 'Add Actor' : 'Edit Actor'}">Actor Form</span>
+                </h1>
+                <h5 class="text-muted">
+                    <i class="bi bi-folder2 me-1"></i> 
+                    <a th:href="@{/projects/{id}(id=${project.id})}" class="text-decoration-none" th:text="${project.name}">Project Name</a>
+                    <i class="bi bi-chevron-right mx-1 small"></i>
+                    <a th:href="@{/projects/{id}/actors(id=${project.id})}" class="text-decoration-none">Actors</a>
+                </h5>
+            </div>
+            <a th:href="@{/projects/{id}/actors(id=${project.id})}" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left me-1"></i> Back to Actors
+            </a>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-card mb-4">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Actor Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="${actorDTO.id == null ? '/projects/' + project.id + '/actors/create' : '/projects/' + project.id + '/actors/' + actorDTO.id + '/edit'}" 
+                              th:object="${actorDTO}" method="post" id="actorForm">
+                            
+                            <input type="hidden" th:field="*{projectId}">
+                            <input type="hidden" th:field="*{type}" id="typeInput">
+                            
+                            <div class="mb-4">
+                                <label for="name" class="form-label">Actor Name <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white"><i class="bi bi-person"></i></span>
+                                    <input type="text" class="form-control" id="name" th:field="*{name}" required 
+                                           placeholder="Enter a descriptive name for this actor">
+                                </div>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                                <div class="form-text">Use a clear, descriptive name that identifies this actor's role in the system.</div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label class="form-label">Actor Type <span class="text-danger">*</span></label>
+                                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('type')}" th:errors="*{type}"></div>
+                                
+                                <div class="row mt-2">
+                                    <div class="col-md-4">
+                                        <div class="actor-type-card actor-type-simple" data-type="SIMPLE">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <span class="weight-badge badge-simple">1</span>
+                                                <h6 class="mb-0">Simple</h6>
+                                            </div>
+                                            <p class="small mb-0">External system with a defined API</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="actor-type-card actor-type-average" data-type="AVERAGE">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <span class="weight-badge badge-average">2</span>
+                                                <h6 class="mb-0">Average</h6>
+                                            </div>
+                                            <p class="small mb-0">System with interactive protocol</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="actor-type-card actor-type-complex" data-type="COMPLEX">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <span class="weight-badge badge-complex">3</span>
+                                                <h6 class="mb-0">Complex</h6>
+                                            </div>
+                                            <p class="small mb-0">Person with GUI interaction</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex justify-content-end gap-2">
+                                <a th:href="@{/projects/{id}/actors(id=${project.id})}" class="btn btn-outline-secondary">
+                                    <i class="bi bi-x-circle me-1"></i> Cancel
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle me-1"></i> 
+                                    <span th:text="${actorDTO.id == null ? 'Add Actor' : 'Save Changes'}">Save Actor</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="help-card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0"><i class="bi bi-info-circle me-2"></i>Actor Types Guide</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-4">
+                            <h6><span class="weight-badge badge-simple">1</span> Simple Actor</h6>
+                            <p class="small">An external system with a well-defined API or protocol-driven interface.</p>
+                            <div class="actor-example">
+                                <i class="bi bi-database me-1 text-primary"></i> Database System
+                            </div>
+                            <div class="actor-example">
+                                <i class="bi bi-globe me-1 text-primary"></i> External Web Service API
+                            </div>
+                            <div class="actor-example">
+                                <i class="bi bi-gear me-1 text-primary"></i> Automated System
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h6><span class="weight-badge badge-average">2</span> Average Actor</h6>
+                            <p class="small">A system interacting through interactive protocols or interfaces.</p>
+                            <div class="actor-example">
+                                <i class="bi bi-pc-display me-1 text-success"></i> Legacy Application
+                            </div>
+                            <div class="actor-example">
+                                <i class="bi bi-building me-1 text-success"></i> B2B Interface
+                            </div>
+                            <div class="actor-example">
+                                <i class="bi bi-terminal me-1 text-success"></i> Command-line Interface
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h6><span class="weight-badge badge-complex">3</span> Complex Actor</h6>
+                            <p class="small">A person interacting with the system through a graphical user interface.</p>
+                            <div class="actor-example">
+                                <i class="bi bi-person me-1 text-warning"></i> End User
+                            </div>
+                            <div class="actor-example">
+                                <i class="bi bi-person-gear me-1 text-warning"></i> Administrator
+                            </div>
+                            <div class="actor-example">
+                                <i class="bi bi-person-vcard me-1 text-warning"></i> Customer
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <i class="bi bi-lightbulb-fill me-2"></i>
+                            <strong>Tip:</strong> Proper actor classification is essential for accurate UAW calculation, which contributes to your final UCP.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <th:block layout:fragment="scripts">
+        <script th:inline="javascript">
+            document.addEventListener('DOMContentLoaded', function() {
+                const typeInput = document.getElementById('typeInput');
+                const typeCards = document.querySelectorAll('.actor-type-card');
+                const currentType = /*[[${actorDTO.type}]]*/ null;
+                
+                // Set initial selection
+                if (currentType) {
+                    typeCards.forEach(card => {
+                        if (card.dataset.type === currentType) {
+                            card.classList.add('selected');
+                        }
+                    });
+                }
+                
+                // Add click handlers
+                typeCards.forEach(card => {
+                    card.addEventListener('click', function() {
+                        // Remove selected class from all cards
+                        typeCards.forEach(c => c.classList.remove('selected'));
+                        
+                        // Add selected class to clicked card
+                        this.classList.add('selected');
+                        
+                        // Update hidden input
+                        typeInput.value = this.dataset.type;
+                    });
+                });
+                
+                // Form validation
+                document.getElementById('actorForm').addEventListener('submit', function(e) {
+                    if (!typeInput.value) {
+                        e.preventDefault();
+                        alert('Please select an actor type.');
+                    }
+                });
+            });
+        </script>
+    </th:block>
+</body>
+</html>

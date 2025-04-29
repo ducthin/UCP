@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Technical Factors - UCP Calculator</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1>Technical Factors</h1>
+                <h5 class="text-muted">
+                    <span th:text="${project.name}">Project Name</span> - 
+                    <span th:text="${calculation.name}">Calculation Name</span>
+                </h5>
+            </div>
+            <a th:href="@{/projects/{id}/calculations(id=${project.id})}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Calculations
+            </a>
+        </div>
+
+        <div class="progress mb-4">
+            <div class="progress-bar" role="progressbar" style="width: 33%;" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100">Step 1 of 3</div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-header bg-light">
+                <h5 class="card-title mb-0">Rate Technical Factors (0-5)</h5>
+            </div>
+            <div class="card-body">
+                <p class="mb-4">
+                    Rate each technical factor from 0 (no influence) to 5 (strong influence):
+                    <span class="badge bg-light text-dark">0 = No influence</span>
+                    <span class="badge bg-light text-dark">1 = Minimal</span>
+                    <span class="badge bg-light text-dark">2 = Moderate</span>
+                    <span class="badge bg-light text-dark">3 = Average</span>
+                    <span class="badge bg-light text-dark">4 = Significant</span>
+                    <span class="badge bg-light text-dark">5 = Strong</span>
+                </p>
+                
+                <form th:action="@{/projects/{projectId}/calculations/{calcId}/technical-factors(projectId=${project.id}, calcId=${calculation.id})}" method="post">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Factor</th>
+                                    <th>Description</th>
+                                    <th>Weight</th>
+                                    <th>Score (0-5)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="factor, stat : ${technicalFactors}">
+                                    <td th:text="${factor.name}"></td>
+                                    <td>
+                                        <strong th:switch="${factor.name}">
+                                            <span th:case="'T1'">Distributed System</span>
+                                            <span th:case="'T2'">Response Time/Performance</span>
+                                            <span th:case="'T3'">End-User Efficiency</span>
+                                            <span th:case="'T4'">Complex Internal Processing</span>
+                                            <span th:case="'T5'">Reusability</span>
+                                            <span th:case="'T6'">Easy to Install</span>
+                                            <span th:case="'T7'">Easy to Use</span>
+                                            <span th:case="'T8'">Portability</span>
+                                            <span th:case="'T9'">Easy to Change</span>
+                                            <span th:case="'T10'">Concurrency</span>
+                                            <span th:case="'T11'">Special Security Features</span>
+                                            <span th:case="'T12'">Direct Access for Third Parties</span>
+                                            <span th:case="'T13'">Special User Training Facilities</span>
+                                        </strong>
+                                    </td>
+                                    <td th:switch="${factor.name}">
+                                        <span th:case="'T1'">The system requires distributed components and communication.</span>
+                                        <span th:case="'T2'">Performance objectives influence design and development.</span>
+                                        <span th:case="'T3'">The system is designed to optimize end-user efficiency.</span>
+                                        <span th:case="'T4'">The system involves complex processing, algorithms, or calculations.</span>
+                                        <span th:case="'T5'">Code is designed for reuse in this or other applications.</span>
+                                        <span th:case="'T6'">Installation ease is a consideration in the design.</span>
+                                        <span th:case="'T7'">Usability is a key requirement of the system.</span>
+                                        <span th:case="'T8'">The system needs to run on different platforms/environments.</span>
+                                        <span th:case="'T9'">The system is designed for easy maintenance and future changes.</span>
+                                        <span th:case="'T10'">The system must handle concurrent users or processes.</span>
+                                        <span th:case="'T11'">The system requires special security features.</span>
+                                        <span th:case="'T12'">The system provides direct access for third parties.</span>
+                                        <span th:case="'T13'">The system requires special training facilities for users.</span>
+                                    </td>
+                                    <td th:text="${factor.weight}"></td>
+                                    <td>
+                                        <select class="form-select" name="score" required>
+                                            <option value="0" th:selected="${factor.score == 0}">0 - No Influence</option>
+                                            <option value="1" th:selected="${factor.score == 1}">1 - Minimal</option>
+                                            <option value="2" th:selected="${factor.score == 2}">2 - Moderate</option>
+                                            <option value="3" th:selected="${factor.score == 3}">3 - Average</option>
+                                            <option value="4" th:selected="${factor.score == 4}">4 - Significant</option>
+                                            <option value="5" th:selected="${factor.score == 5}">5 - Strong</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mt-4">
+                        <a th:href="@{/projects/{id}/calculations(id=${project.id})}" class="btn btn-outline-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Next: Environmental Factors</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
