@@ -65,19 +65,25 @@ public class ProjectController {
         
         model.addAttribute("project", project);
         return "projects/form";
-    }
-
-    @PostMapping("/{id}/edit")
+    }    @PostMapping("/{id}/edit")
     public String updateProject(@PathVariable Long id,
-                               @Valid @ModelAttribute("project") Project project,
+                               @Valid @ModelAttribute("project") Project projectUpdate,
                                BindingResult result,
                                RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             return "projects/form";
         }
         
-        project.setId(id);
-        projectService.save(project);
+        // Fetch the existing project with all relationships
+        Project existingProject = projectService.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Invalid project ID: " + id));
+        
+        // Update only the fields from the form
+        existingProject.setName(projectUpdate.getName());
+        existingProject.setDescription(projectUpdate.getDescription());
+        
+        // Save the updated project (preserving actors and use cases)
+        projectService.save(existingProject);
         redirectAttributes.addFlashAttribute("successMessage", "Project updated successfully!");
         return "redirect:/projects";
     }

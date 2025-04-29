@@ -53,33 +53,35 @@
                             <div class="mb-4">
                                 <label class="form-label">Actor Type <span class="text-danger">*</span></label>
                                 <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('type')}" th:errors="*{type}"></div>
-                                
-                                <div class="row mt-2">
-                                    <div class="col-md-4">
+                                  <div class="row mt-2">
+                                    <div class="col-md-4 mb-3">
                                         <div class="actor-type-card actor-type-simple" data-type="SIMPLE">
                                             <div class="d-flex align-items-center mb-2">
                                                 <span class="weight-badge badge-simple">1</span>
                                                 <h6 class="mb-0">Simple</h6>
                                             </div>
                                             <p class="small mb-0">External system with a defined API</p>
+                                            <small class="text-muted mt-2 d-block">Examples: Database, Web service</small>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-4 mb-3">
                                         <div class="actor-type-card actor-type-average" data-type="AVERAGE">
                                             <div class="d-flex align-items-center mb-2">
                                                 <span class="weight-badge badge-average">2</span>
                                                 <h6 class="mb-0">Average</h6>
                                             </div>
                                             <p class="small mb-0">System with interactive protocol</p>
+                                            <small class="text-muted mt-2 d-block">Examples: CLI, Legacy system</small>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-4 mb-3">
                                         <div class="actor-type-card actor-type-complex" data-type="COMPLEX">
                                             <div class="d-flex align-items-center mb-2">
                                                 <span class="weight-badge badge-complex">3</span>
                                                 <h6 class="mb-0">Complex</h6>
                                             </div>
                                             <p class="small mb-0">Person with GUI interaction</p>
+                                            <small class="text-muted mt-2 d-block">Examples: User, Admin, Customer</small>
                                         </div>
                                     </div>
                                 </div>
@@ -156,24 +158,34 @@
             </div>
         </div>
     </div>
-    
-    <th:block layout:fragment="scripts">
+      <th:block layout:fragment="scripts">
         <script th:inline="javascript">
             document.addEventListener('DOMContentLoaded', function() {
                 const typeInput = document.getElementById('typeInput');
                 const typeCards = document.querySelectorAll('.actor-type-card');
                 const currentType = /*[[${actorDTO.type}]]*/ null;
                 
-                // Set initial selection
+                // Set initial selection based on existing data or default to SIMPLE
+                let hasInitialSelection = false;
+                
+                // If we have a current type from server, use it
                 if (currentType) {
                     typeCards.forEach(card => {
                         if (card.dataset.type === currentType) {
                             card.classList.add('selected');
+                            typeInput.value = currentType;
+                            hasInitialSelection = true;
                         }
                     });
                 }
                 
-                // Add click handlers
+                // If no selection was made, default to the first card (Simple)
+                if (!hasInitialSelection && typeCards.length > 0) {
+                    typeCards[0].classList.add('selected');
+                    typeInput.value = typeCards[0].dataset.type;
+                }
+                
+                // Add click handlers with improved visual feedback
                 typeCards.forEach(card => {
                     card.addEventListener('click', function() {
                         // Remove selected class from all cards
@@ -184,6 +196,12 @@
                         
                         // Update hidden input
                         typeInput.value = this.dataset.type;
+                        
+                        // Visual feedback animation
+                        this.style.transform = 'scale(0.98)';
+                        setTimeout(() => {
+                            this.style.transform = 'scale(1)';
+                        }, 150);
                     });
                 });
                 
@@ -192,6 +210,10 @@
                     if (!typeInput.value) {
                         e.preventDefault();
                         alert('Please select an actor type.');
+                        document.querySelector('.actor-type-card').scrollIntoView({ 
+                            behavior: 'smooth',
+                            block: 'center'
+                        });
                     }
                 });
             });

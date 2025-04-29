@@ -49,15 +49,17 @@
                                     <input type="text" id="actorSearch" class="form-control form-control-sm" placeholder="Search actors...">
                                 </div>
                             </div>
-                        </div>
-                        <div class="card-body" id="actorsContainer">
+                        </div>                        <div class="card-body" id="actorsContainer">
                             <div th:each="actor : ${actors}" class="actor-card" th:classappend="${'actor-' + actor.type.toString().toLowerCase()}">
                                 <div class="card-body d-flex align-items-center">
                                     <div>
                                         <h6 class="mb-1" th:text="${actor.name}">Actor Name</h6>
-                                        <span class="actor-badge" th:classappend="${'badge-' + actor.type.toString().toLowerCase()}" th:text="${actor.type}">Simple</span>
+                                        <div class="d-flex align-items-center">
+                                            <span class="actor-badge" th:classappend="${'badge-' + actor.type.toString().toLowerCase()}" th:text="${actor.type}">Simple</span>
+                                            <span class="weight-badge" th:text="${actor.weight}">1</span>
+                                        </div>
                                     </div>
-                                    <div class="weight-badge" th:text="${actor.weight}">1</div>
+                                    
                                     <div class="ms-auto">
                                         <div class="actor-actions">
                                             <a th:href="@{/projects/{projectId}/actors/{id}/edit(projectId=${project.id}, id=${actor.id})}" 
@@ -95,67 +97,38 @@
                     <div class="uaw-value" th:text="${#aggregates.sum(actors.![weight])}">0</div>
                     <p class="mb-0 opacity-75">Based on <strong th:text="${actors.size()}">0</strong> actors</p>
                 </div>
-                
-                <!-- Actor Type Distribution -->
-                <div th:unless="${actors.empty}" class="card mb-4">
-                    <div class="card-header bg-white">
-                        <h5 class="mb-0">Actor Type Distribution</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="actor-distribution mb-4">
-                            <canvas id="actorDistributionChart"></canvas>
-                        </div>
-                        
-                        <div class="table-responsive">
-                            <table class="table table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>Type</th>
-                                        <th>Count</th>
-                                        <th>Weight</th>
-                                        <th>Total</th>
-                                    </tr>
-                                </thead>                                <tbody>
-                                    <tr th:each="type : ${T(Group2.example.UserCasePoint.model.ActorType).values()}">
-                                        <td>
-                                            <span class="actor-badge" th:classappend="${'badge-' + type.toString().toLowerCase()}" th:text="${type}">Simple</span>
-                                        </td>
-                                        <td th:text="${actorCounts.get(type)}">0</td>
-                                        <td th:text="${type.weight}">1</td>
-                                        <td th:text="${type.weight * actorCounts.get(type)}">0</td>
-                                    </tr>
-                                </tbody>
-                                <tfoot class="table-light">
-                                    <tr>
-                                        <th>Total</th>
-                                        <th th:text="${actors.size()}">0</th>
-                                        <th>-</th>
-                                        <th th:text="${#aggregates.sum(actors.![weight])}">0</th>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                
                 <!-- Actor Help Card -->
                 <div class="card">
                     <div class="card-header bg-white">
                         <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Actor Types</h5>
                     </div>
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <h6><span class="actor-badge badge-simple">Simple (1)</span></h6>
+                    <div class="card-body">                        <div class="mb-3">
+                            <h6>
+                                <div class="d-flex align-items-center">
+                                    <span class="actor-badge badge-simple">Simple</span>
+                                    <span class="weight-badge ms-2">1</span>
+                                </div>
+                            </h6>
                             <p class="mb-1">External system with a defined API</p>
                             <small class="text-muted">Examples: External web service, database</small>
                         </div>
                         <div class="mb-3">
-                            <h6><span class="actor-badge badge-average">Average (2)</span></h6>
+                            <h6>
+                                <div class="d-flex align-items-center">
+                                    <span class="actor-badge badge-average">Average</span>
+                                    <span class="weight-badge ms-2">2</span>
+                                </div>
+                            </h6>
                             <p class="mb-1">External system interacting through a protocol</p>
                             <small class="text-muted">Examples: Person through a command-line interface</small>
                         </div>
                         <div>
-                            <h6><span class="actor-badge badge-complex">Complex (3)</span></h6>
+                            <h6>
+                                <div class="d-flex align-items-center">
+                                    <span class="actor-badge badge-complex">Complex</span>
+                                    <span class="weight-badge ms-2">3</span>
+                                </div>
+                            </h6>
                             <p class="mb-1">Person interacting through a graphical user interface</p>
                             <small class="text-muted">Examples: User through a web interface</small>
                         </div>
@@ -163,10 +136,8 @@
                 </div>
             </div>
         </div>
-    </div>
-    
+    </div>    
     <th:block layout:fragment="scripts">
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script th:inline="javascript">
             document.addEventListener('DOMContentLoaded', function() {
                 // Search functionality
@@ -174,8 +145,7 @@
                 if (searchInput) {
                     const actorCards = document.querySelectorAll('.actor-card');
                     const noResultsMessage = document.getElementById('noResultsMessage');
-                    
-                    searchInput.addEventListener('keyup', function() {
+                      searchInput.addEventListener('keyup', function() {
                         const searchTerm = this.value.toLowerCase();
                         let foundResults = false;
                         
@@ -197,57 +167,9 @@
                         } else {
                             noResultsMessage.classList.add('d-none');
                         }
-                    });
-                }
-                
-                // Actor Distribution Chart
-                const ctx = document.getElementById('actorDistributionChart');
-                if (ctx) {                        const actorTypes = /*[[${T(Group2.example.UserCasePoint.model.ActorType).values()}]]*/ [];
-                        const actorCounts = [];
-                        
-                        // Count actors by type
-                        actorTypes.forEach(type => {
-                            const count = /*[[${actorCounts.get(type)}]]*/ 0;
-                            actorCounts.push(count);
-                        });
-                    
-                    new Chart(ctx, {
-                        type: 'doughnut',
-                        data: {
-                            labels: ['Simple', 'Average', 'Complex'],
-                            datasets: [{
-                                data: actorCounts,
-                                backgroundColor: [
-                                    '#36b9cc',
-                                    '#1cc88a',
-                                    '#f6c23e'
-                                ],
-                                hoverOffset: 4
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: {
-                                    position: 'bottom'
-                                }
-                            }
-                        }
-                    });
-                }
+                    });                }                
             });
         </script>
-    </th:block>
-</body>
-</html>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+        </th:block>
 </body>
 </html>

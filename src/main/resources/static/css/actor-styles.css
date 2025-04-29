@@ -1,0 +1,120 @@
+/* Actor Type Card Styles */
+.actor-type-card {
+    background-color: white;
+    border: 1px solid #e3e6f0;
+    border-radius: 4px;
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    height: 100%;
+    position: relative;
+    margin-bottom: 0.5rem;
+}
+
+.actor-type-card:hover {
+    background-color: #f8f9fc;
+    border-color: #d1d3e2;
+}
+
+.actor-type-card.selected {
+    border: 2px solid #4e73df;
+    background-color: #f8f9fc;
+}
+
+.actor-type-card.selected::after {
+    content: '✓';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 20px;
+    height: 20px;
+    background-color: #4e73df;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.weight-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    background-color: #f1f3f9;
+    border: 1px solid #d1d3e2;
+    border-radius: 50%;
+    color: #5a5c69;
+    font-weight: 600;
+    margin-right: 0.75rem;
+}
+
+.actor-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1;
+    color: #5a5c69;
+    background-color: #f1f3f9;
+    border: 1px solid #e3e6f0;
+    border-radius: 3px;
+    margin-right: 0.5rem;
+}
+
+.badge-simple, .badge-average, .badge-complex {
+    background-color: #f1f3f9;
+}
+
+/* UAW Card Styles */
+.uaw-card {
+    background-color: #f8f9fc;
+    color: #5a5c69;
+    border: 1px solid #e3e6f0;
+    border-radius: 4px;
+    padding: 1.25rem;
+    text-align: center;
+}
+
+.uaw-title {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+    color: #858796;
+}
+
+.uaw-value {
+    font-size: 2.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #4e73df;
+}
+
+/* Empty State Styles */
+.empty-state {
+    text-align: center;
+    padding: 1.5rem 1rem;
+}
+
+.empty-state i {
+    font-size: 2rem;
+    color: #858796;
+    opacity: 0.5;
+    margin-bottom: 0.75rem;
+    display: block;
+}
+
+.actor-actions {
+    display: flex;
+    align-items: center;
+}
+
+.actor-actions .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+}
