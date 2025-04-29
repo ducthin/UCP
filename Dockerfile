@@ -17,4 +17,5 @@ COPY --from=build /app/target/UserCasePoint-0.0.1-SNAPSHOT.jar app.jar
 ENV PORT=8080
 EXPOSE ${PORT}
 # Use consistent JAR name and allow for environment variables to be passed
+# Ensure server.port is set to the same value as the exposed port
 ENTRYPOINT ["sh", "-c", "java -Dserver.port=${PORT} -jar app.jar"]
