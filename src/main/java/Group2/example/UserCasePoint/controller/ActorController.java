@@ -30,7 +30,8 @@ public class ActorController {
     public ActorController(ActorService actorService, ProjectService projectService) {
         this.actorService = actorService;
         this.projectService = projectService;
-    }    @GetMapping
+    }    
+    @GetMapping
     public String listActors(@PathVariable Long projectId, Model model) {
         try {
             Project project = projectService.findById(projectId)
