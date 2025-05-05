@@ -45,20 +45,7 @@
                             <li class="breadcrumb-item active" th:text="${#strings.length(request.requestURI) > 1 ? request.requestURI.split('/')[1] : 'Home'}">Page</li>
                         </ol>
                     </div>
-                    
-                    <div class="ms-auto d-flex align-items-center">
-                        <div class="dropdown">
-                            <button class="btn btn-sm btn-light rounded-circle" type="button" id="helpDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-question-circle text-primary"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="helpDropdown">
-                                <li><a class="dropdown-item" href="#"><i class="bi bi-book me-2"></i> Documentation</a></li>
-                                <li><a class="dropdown-item" href="#"><i class="bi bi-question-circle me-2"></i> Help Center</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="#"><i class="bi bi-envelope me-2"></i> Contact Support</a></li>
-                            </ul>
-                        </div>
-                    </div>
+                    <div class="ms-auto d-flex align-items-center"></div>
                 </div>
             </nav>
               <div class="container-fluid px-4">
