@@ -74,7 +74,8 @@
                                     </li>
                                 </ul>
                             </div>
-                        </div>                          <div class="card-body d-flex flex-column py-2">
+                        </div>                          
+                        <div class="card-body d-flex flex-column py-2">
                             <div class="project-description mb-3">
                                 <div class="d-flex align-items-center mb-1">
                                     <h6 class="fs-8 fw-bold text-primary mb-0">Description</h6>
@@ -124,7 +125,7 @@
                         </div><div class="card-footer bg-white py-2">
                             <div class="d-flex flex-column flex-md-row gap-1 justify-content-between">                                
                                 <a th:href="@{/projects/{id}(id=${project.id})}" class="btn btn-sm btn-primary project-actions">
-                                    <i class="bi bi-binoculars-fill"></i> View
+                                    <i class="bi bi-eye"></i> View
                                 </a>
                                 <div class="d-flex gap-1">
                                     <a th:href="@{/projects/{id}/actors(id=${project.id})}" class="btn btn-sm btn-outline-info project-actions">
