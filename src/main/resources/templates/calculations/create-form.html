@@ -6,76 +6,75 @@
     <title>Create UCP Calculation - UCP Calculator</title>
 </head>
 <body>
-    <div layout:fragment="content">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h1>Create New Calculation</h1>
-                <h5 class="text-muted" th:text="${project.name}">Project Name</h5>
+    <div layout:fragment="content">        <div class="mb-4">
+            <h2>Create New UCP Calculation</h2>
+            <p class="text-secondary" th:text="${project.name}">Project Name</p>
+            
+            <div class="mt-2">
+                <a th:href="@{/projects/{id}/calculations(id=${project.id})}" class="btn btn-sm btn-outline-secondary">
+                    Back to Calculations
+                </a>
             </div>
-            <a th:href="@{/projects/{id}/calculations(id=${project.id})}" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left"></i> Back to Calculations
-            </a>
         </div>
 
         <div class="row">
-            <div class="col-md-8">
-                <div class="card shadow-sm">
+            <div class="col-md-8">                <div class="card border">
                     <div class="card-body">
-                        <form th:action="@{/projects/{id}/calculations/create(id=${project.id})}" method="post">
-                            <div class="mb-4">
+                        <form th:action="@{/projects/{id}/calculations/create(id=${project.id})}" method="post">                            <div class="mb-4">
                                 <label for="calculationName" class="form-label">Calculation Name *</label>
                                 <input type="text" class="form-control" id="calculationName" name="calculationName" required>
                                 <div class="form-text">Enter a descriptive name for this calculation (e.g., "Initial Estimate", "Refined Estimate", "Final Calculation")</div>
                             </div>
-                            
-                            <div class="alert alert-info">
-                                <h5>Before proceeding with the calculation:</h5>
+                              <div class="alert alert-light border">
+                                <h6 class="mb-2">Before proceeding with the calculation:</h6>
                                 <ul>
                                     <li>Make sure you have defined all <a th:href="@{/projects/{id}/actors(id=${project.id})}">actors</a> in the system</li>
                                     <li>Make sure you have defined all <a th:href="@{/projects/{id}/usecases(id=${project.id})}">use cases</a> in the system</li>
                                 </ul>
-                                <p>The calculation process will guide you through the following steps:</p>
-                                <ol>
-                                    <li>Evaluating Technical Factors</li>
-                                    <li>Evaluating Environmental Factors</li>
-                                    <li>Final Calculation and Results</li>
+                                <hr>
+                                <p class="mb-2">The calculation process will guide you through the following steps:</p>
+                                <ol class="mb-0">
+                                    <li>Evaluating technical factors (TDI - Total Degree of Influence)</li>
+                                    <li>Calculating VAF (Value Adjustment Factor)</li>
+                                    <li>Final UCP calculation and effort estimation</li>
                                 </ol>
                             </div>
-                            
-                            <div class="d-flex justify-content-end gap-2">
-                                <a th:href="@{/projects/{id}/calculations(id=${project.id})}" class="btn btn-outline-secondary">Cancel</a>
-                                <button type="submit" class="btn btn-primary">Start Calculation</button>
+                              <div class="d-flex justify-content-end gap-2 mt-3">
+                                <a th:href="@{/projects/{id}/calculations(id=${project.id})}" class="btn btn-sm btn-outline-secondary">Cancel</a>
+                                <button type="submit" class="btn btn-sm btn-primary">Start Calculation</button>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
-            
-            <div class="col-md-4">
-                <div class="card shadow-sm">
-                    <div class="card-header bg-light">
-                        <h5 class="card-title mb-0">UCP Calculation Process</h5>
+              <div class="col-md-4">
+                <div class="card border">                    <div class="card-header">
+                        <h5 class="card-title mb-0">UCP Calculation Formula</h5>
                     </div>
-                    <div class="card-body">
-                        <h6>UCP Calculation Formula:</h6>
-                        <p><strong>UCP = UUCP × TCF × ECF</strong></p>
-                        <p>Where:</p>
-                        <ul>
-                            <li><strong>UUCP</strong> (Unadjusted Use Case Points) = UAW + UUCW</li>
-                            <li><strong>UAW</strong> (Unadjusted Actor Weight) = Sum of all actor weights</li>
-                            <li><strong>UUCW</strong> (Unadjusted Use Case Weight) = Sum of all use case weights</li>
-                            <li><strong>TCF</strong> (Technical Complexity Factor) = 0.6 + (0.01 × TF)</li>
-                            <li><strong>ECF</strong> (Environmental Complexity Factor) = 1.4 + (-0.03 × EF)</li>
-                        </ul>
+                    <div class="card-body">                        <div class="mb-3">
+                            <h6>Main Formula:</h6>
+                            <div class="p-2 bg-light border">
+                                <p class="text-center mb-0"><strong>UCP = (UUCW + UAW) × VAF</strong></p>
+                            </div>
+                        </div>
                         
-                        <h6>Effort Estimation:</h6>
-                        <p>Estimated hours = UCP × Productivity Factor</p>
-                        <p>The Productivity Factor can vary based on project characteristics:</p>
-                        <ul>
-                            <li>20 hours/UCP for favorable conditions</li>
-                            <li>32 hours/UCP for average conditions</li>
-                            <li>48 hours/UCP for difficult conditions</li>
-                        </ul>
+                        <div class="mb-3">
+                            <h6>Components:</h6>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item"><strong>UUCW</strong> = Sum of use case weights<br><small>(Unadjusted Use Case Weight)</small></li>
+                                <li class="list-group-item"><strong>UAW</strong> = Sum of actor weights<br><small>(Unadjusted Actor Weight)</small></li>
+                                <li class="list-group-item"><strong>VAF</strong> = 0.65 + (0.01 × TDI)<br><small>(Value Adjustment Factor)</small></li>
+                                <li class="list-group-item"><strong>TDI</strong> = Sum of all 14 technical factors' influence scores<br><small>(Total Degree of Influence)</small></li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h6>Effort Estimation:</h6>
+                            <div class="p-2 bg-light border">
+                                <p class="mb-1"><strong>Estimated time = UCP × 20 hours</strong></p>
+                                <p class="small mb-0 text-secondary">The formula has been simplified by using a fixed coefficient instead of multiple levels.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

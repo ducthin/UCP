@@ -65,7 +65,7 @@ public class UcpCalculationService {
         // Use a final variable inside the lambdas
         final UcpCalculation finalCalculation = savedCalculation;
 
-        // Initialize technical factors
+        // Initialize technical factors - only need these for the new formula
         List<TechnicalFactor> technicalFactors = Arrays.stream(TechnicalFactor.getDefaultFactors())
                 .map(tf -> {
                     tf.setCalculation(finalCalculation); // Use the final variable
@@ -74,17 +74,11 @@ public class UcpCalculationService {
                 .collect(Collectors.toList());
         technicalFactorRepository.saveAll(technicalFactors);
 
-        // Initialize environmental factors
-        List<EnvironmentalFactor> environmentalFactors = Arrays.stream(EnvironmentalFactor.getDefaultFactors())
-                .map(ef -> {
-                    ef.setCalculation(finalCalculation); // Use the final variable
-                    return ef;
-                })
-                .collect(Collectors.toList());
-        environmentalFactorRepository.saveAll(environmentalFactors);
+        // No need to initialize environmental factors as they aren't used in the new formula
 
         return savedCalculation; // Return the saved entity
-    }    @Transactional
+    }    
+    @Transactional
     public UcpCalculation calculate(Long calculationId) {
         UcpCalculation calculation = ucpCalculationRepository.findById(calculationId)
                 .orElseThrow(() -> new IllegalArgumentException("Calculation not found"));
@@ -92,9 +86,8 @@ public class UcpCalculationService {
         Project project = calculation.getProject();
         Long projectId = project.getId();
 
-        // Get all factors
+        // Chỉ lấy technical factors
         List<TechnicalFactor> technicalFactors = technicalFactorRepository.findByCalculationId(calculationId);
-        List<EnvironmentalFactor> environmentalFactors = environmentalFactorRepository.findByCalculationId(calculationId);
 
         // Calculate UAW (Unadjusted Actor Weight)
         double uaw = actorService.calculateUAW(projectId);
@@ -108,43 +101,32 @@ public class UcpCalculationService {
         double uucp = uaw + uucw;
         calculation.setUucp(uucp);
 
-        // Calculate Total Technical Factor (TF)
-        double tf = technicalFactors.stream()
-                .mapToDouble(factor -> factor.getWeight() * factor.getScore())
+        // Calculate TDI (Total Degree of Influence) - tổng của 14 yếu tố kỹ thuật (thang điểm 0-5)
+        double tdi = technicalFactors.stream()
+                .mapToDouble(TechnicalFactor::getScore)
                 .sum();
-        calculation.setTf(tf);
+        calculation.setTdi(tdi);
         
-        // Calculate TCF (Technical Complexity Factor)
-        double tcf = 0.6 + (0.01 * tf);
-        calculation.setTcf(tcf);
-        
-        // Calculate Total Environmental Factor (EF)
-        double ef = environmentalFactors.stream()
-                .mapToDouble(factor -> factor.getWeight() * factor.getScore())
-                .sum();
-        calculation.setEf(ef);
+        // Calculate VAF (Value Adjustment Factor) theo công thức: VAF = 0.65 + (0.01 × TDI)
+        double vaf = 0.65 + (0.01 * tdi);
+        calculation.setVaf(vaf);
 
-        // Calculate ECF (Environmental Complexity Factor)
-        double ecf = 1.4 + (-0.03 * ef);
-        calculation.setEcf(ecf);
-
-        // Calculate UCP (Use Case Points)
-        double ucp = uucp * tcf * ecf;
+        // Calculate UCP theo công thức: UCP = (UUCW + UAW) × VAF
+        double ucp = uucp * vaf;
         calculation.setUcp(ucp);
         
-        // Count significant environmental factors
-        EnvironmentalFactor[] efArray = environmentalFactors.toArray(new EnvironmentalFactor[0]);
-        int significantFactors = EnvironmentalFactor.countSignificantFactors(efArray);
-        
-        // Calculate Productivity Factor based on Environmental Significance
-        double productivityFactor = calculation.calculateProductivityFactor(significantFactors);
-        calculation.setProductivityFactor(productivityFactor);
-        
-        // Calculate Estimated Effort in hours
-        double estimatedEffort = ucp * productivityFactor;
+        // Ước tính nỗ lực
+        double estimatedEffort = ucp * 20; // Sử dụng hệ số 20 giờ/UCP đơn giản
         calculation.setEstimatedEffort(estimatedEffort);
 
-        // Save and return the calculation
+        // Các giá trị cũ không còn sử dụng - chỉ đặt giá trị mặc định để tránh lỗi
+        calculation.setTf(0);
+        calculation.setTcf(0.6);
+        calculation.setEf(0);
+        calculation.setEcf(1.4);
+        calculation.setProductivityFactor(20);
+
+        // Lưu và trả về kết quả
         return ucpCalculationRepository.save(calculation);
     }
       @Transactional
@@ -162,53 +144,21 @@ public class UcpCalculationService {
             existing.setScore(updated.getScore());
         }
 
-        // Calculate and set TF
-        double tf = existingFactors.stream()
-                .mapToDouble(factor -> factor.getWeight() * factor.getScore())
+        // Calculate Total Degree of Influence (TDI)
+        double tdi = existingFactors.stream()
+                .mapToDouble(TechnicalFactor::getScore)
                 .sum();
-        calculation.setTf(tf);
+        calculation.setTdi(tdi);
         
-        // Calculate and set TCF
-        double tcf = 0.6 + (0.01 * tf);
-        calculation.setTcf(tcf);
+        // Calculate VAF (Value Adjustment Factor)
+        double vaf = 0.65 + (0.01 * tdi);
+        calculation.setVaf(vaf);
 
         technicalFactorRepository.saveAll(existingFactors);
         ucpCalculationRepository.save(calculation);
         
         return calculation;
     }    @Transactional
-    public UcpCalculation updateEnvironmentalFactors(Long calculationId, List<EnvironmentalFactor> updatedFactors) {
-        UcpCalculation calculation = ucpCalculationRepository.findById(calculationId)
-                .orElseThrow(() -> new IllegalArgumentException("Calculation not found"));
-
-        // Get existing factors
-        List<EnvironmentalFactor> existingFactors = environmentalFactorRepository.findByCalculationId(calculationId);
-
-        // Update existing factors with new scores
-        for (int i = 0; i < existingFactors.size() && i < updatedFactors.size(); i++) {
-            EnvironmentalFactor existing = existingFactors.get(i);
-            EnvironmentalFactor updated = updatedFactors.get(i);
-            existing.setScore(updated.getScore());
-        }
-        
-        // Calculate and set EF
-        double ef = existingFactors.stream()
-                .mapToDouble(factor -> factor.getWeight() * factor.getScore())
-                .sum();
-        calculation.setEf(ef);
-        
-        // Calculate and set ECF
-        double ecf = 1.4 + (-0.03 * ef);
-        calculation.setEcf(ecf);
-
-        environmentalFactorRepository.saveAll(existingFactors);
-        ucpCalculationRepository.save(calculation);
-        
-        return calculation;
-    }
-
-    // Update actual effort
-    @Transactional
     public UcpCalculation updateActualEffort(Long id, Double actualEffort) {
         UcpCalculation calculation = ucpCalculationRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Calculation not found"));
@@ -230,5 +180,16 @@ public class UcpCalculationService {
     @Transactional
     public void deleteById(Long id) {
         ucpCalculationRepository.deleteById(id);
+    }
+    
+    /**
+     * @deprecated Environmental factors không còn được sử dụng trong công thức UCP mới, giữ lại để tương thích ngược
+     */
+    @Deprecated
+    @Transactional
+    public UcpCalculation updateEnvironmentalFactors(Long calculationId, List<EnvironmentalFactor> updatedFactors) {
+        UcpCalculation calculation = ucpCalculationRepository.findById(calculationId)
+                .orElseThrow(() -> new IllegalArgumentException("Calculation not found"));
+        return calculation; // Không làm gì cả, chỉ trả về calculation
     }
 }

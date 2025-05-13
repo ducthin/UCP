@@ -66,14 +66,12 @@
                         
                         <div class="mb-3">
                             <h6>Based on:</h6>
-                            <ul>
-                                <li>UAW: <span th:text="${calculation.uaw != null ? #numbers.formatDecimal(calculation.uaw, 1, 2) : 'N/A'}"></span></li>
+                            <ul>                                <li>UAW: <span th:text="${calculation.uaw != null ? #numbers.formatDecimal(calculation.uaw, 1, 2) : 'N/A'}"></span></li>
                                 <li>UUCW: <span th:text="${calculation.uucw != null ? #numbers.formatDecimal(calculation.uucw, 1, 2) : 'N/A'}"></span></li>
-                                <li>UUCP: <span th:text="${calculation.uucp != null ? #numbers.formatDecimal(calculation.uucp, 1, 2) : 'N/A'}"></span></li>
-                                <li>TCF: <span th:text="${calculation.tcf != null ? #numbers.formatDecimal(calculation.tcf, 1, 2) : 'N/A'}"></span></li>
-                                <li>ECF: <span th:text="${calculation.ecf != null ? #numbers.formatDecimal(calculation.ecf, 1, 2) : 'N/A'}"></span></li>
+                                <li>UUCW + UAW: <span th:text="${calculation.uucw != null && calculation.uaw != null ? #numbers.formatDecimal(calculation.uucw + calculation.uaw, 1, 2) : 'N/A'}"></span></li>
+                                <li>VAF: <span th:text="${calculation.tcf != null ? #numbers.formatDecimal(calculation.tcf, 1, 2) : 'N/A'}"></span></li>
                                 <li>UCP: <span th:text="${calculation.ucp != null ? #numbers.formatDecimal(calculation.ucp, 1, 2) : 'N/A'}"></span></li>
-                                <li>Productivity: <span th:text="${calculation.productivityFactor != null ? calculation.productivityFactor + ' hours/UCP' : 'N/A'}"></span></li>
+                                <li>Productivity: <span>20 hours/UCP</span></li>
                             </ul>
                         </div>
                         

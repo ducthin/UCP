@@ -141,8 +141,7 @@
         <div class="row">
             <div class="col-lg-8">
                 <div class="about-section">
-                    <div class="section-content">
-                        <h2 class="section-title">What are Use Case Points?</h2>
+                    <div class="section-content">                        <h2 class="section-title">What are Use Case Points?</h2>
                         <p>
                             Use Case Points (UCP) is an estimation method primarily used in software development 
                             to predict the size and effort required for a software project based on use cases.
@@ -153,6 +152,11 @@
                             systematic approach to estimating project effort by analyzing actors, use cases, and various 
                             adjustment factors that impact development complexity.
                         </p>
+                        <div class="alert alert-light border">
+                            <strong>Note:</strong> This application uses a simplified UCP formula: UCP = (UUCW + UAW) × VAF, 
+                            where VAF (Value Adjustment Factor) replaces the traditional TCF and ECF components. This simplified 
+                            approach maintains estimation accuracy while making the process more accessible and straightforward.
+                        </div>
                         
                         <div class="process-flow">
                             <h4 class="text-center mb-4">UCP Calculation Process</h4>
@@ -165,45 +169,40 @@
                                 <span class="step-number">2</span>
                                 <span class="fw-bold">Identify and Classify Use Cases</span>
                                 <div class="mt-2">Categorize use cases as Simple (5), Average (10), or Complex (15)</div>
-                            </div>
-                            <div class="step-box">
+                            </div>                            <div class="step-box">
                                 <span class="step-number">3</span>
-                                <span class="fw-bold">Calculate Unadjusted Use Case Points (UUCP)</span>
-                                <div class="mt-2">UUCP = Unadjusted Actor Weight (UAW) + Unadjusted Use Case Weight (UUCW)</div>
+                                <span class="fw-bold">Calculate Actor and Use Case Weights</span>
+                                <div class="mt-2">Determine Unadjusted Actor Weight (UAW) and Unadjusted Use Case Weight (UUCW)</div>
                             </div>
                             <div class="step-box">
                                 <span class="step-number">4</span>
-                                <span class="fw-bold">Determine Technical and Environmental Factors</span>
-                                <div class="mt-2">Assess 13 technical factors and 8 environmental factors</div>
+                                <span class="fw-bold">Determine Technical Factors</span>
+                                <div class="mt-2">Assess 14 technical factors to calculate Total Degree of Influence (TDI)</div>
                             </div>
                             <div class="step-box">
                                 <span class="step-number">5</span>
                                 <span class="fw-bold">Calculate UCP</span>
-                                <div class="mt-2">UCP = UUCP × Technical Complexity Factor (TCF) × Environmental Complexity Factor (ECF)</div>
+                                <div class="mt-2">UCP = (UUCW + UAW) × Value Adjustment Factor (VAF)</div>
                             </div>
                             <div class="step-box">
                                 <span class="step-number">6</span>
                                 <span class="fw-bold">Estimate Effort</span>
-                                <div class="mt-2">Effort (hours) = UCP × Productivity Factor (20-28 hours per UCP)</div>
+                                <div class="mt-2">Effort (hours) = UCP × 20 hours per UCP</div>
                             </div>
                         </div>
+                          <h3 class="section-title mt-4">Key Formulas in UCP</h3>
                         
-                        <h3 class="section-title mt-4">Key Formulas in UCP</h3>
-                        
                         <div class="formula-block">
-                            UUCP = UAW + UUCW
+                            TDI = Sum of all Technical Factors (rated 0-5 × weight)
                         </div>
                         <div class="formula-block">
-                            TCF = 0.6 + (0.01 × Technical Factor Total)
+                            VAF = 0.65 + (0.01 × TDI)
                         </div>
                         <div class="formula-block">
-                            ECF = 1.4 + (-0.03 × Environmental Factor Total)
+                            UCP = (UUCW + UAW) × VAF
                         </div>
                         <div class="formula-block">
-                            UCP = UUCP × TCF × ECF
-                        </div>
-                        <div class="formula-block">
-                            Effort = UCP × Productivity Factor
+                            Effort = UCP × 20 hours
                         </div>
                     </div>
                 </div>
@@ -257,10 +256,9 @@
                 </div>
             </div>
         </div>
-        
-        <div class="about-section mt-4">
+          <div class="about-section mt-4">
             <div class="section-header">
-                <h3 class="mb-0">Technical Factors</h3>
+                <h3 class="mb-0">Technical Factors for VAF Calculation</h3>
             </div>
             <div class="section-content">
                 <div class="table-responsive">
@@ -325,87 +323,63 @@
                             </tr>
                             <tr>
                                 <td>T11</td>
-                                <td>Special Security Features</td>
+                                <td>Security Features</td>
                                 <td class="text-center">1.0</td>
                             </tr>
                             <tr>
                                 <td>T12</td>
-                                <td>Direct Access for Third Parties</td>
+                                <td>Third Party Access</td>
                                 <td class="text-center">1.0</td>
                             </tr>
                             <tr>
                                 <td>T13</td>
-                                <td>Special User Training Facilities</td>
+                                <td>User Training</td>
+                                <td class="text-center">1.0</td>
+                            </tr>
+                            <tr>
+                                <td>T14</td>
+                                <td>Facilitate Change</td>
                                 <td class="text-center">1.0</td>
                             </tr>
                         </tbody>
                     </table>
+                </div>
+                <div class="mt-3">
+                    <div class="alert alert-info">
+                        <strong>Value Adjustment Factor (VAF) Formula:</strong> VAF = 0.65 + (0.01 × TDI)<br>
+                        <small>Where TDI is the Total Degree of Influence, calculated as the sum of all technical factors (each rated from 0-5) multiplied by their respective weights.</small>
+                    </div>
                 </div>
             </div>
         </div>
-        
-        <div class="about-section mt-4">
+          <div class="about-section mt-4">
             <div class="section-header">
-                <h3 class="mb-0">Environmental Factors</h3>
+                <h3 class="mb-0">Effort Estimation</h3>
             </div>
             <div class="section-content">
-                <div class="table-responsive">
-                    <table class="table table-hover factors-table">
-                        <thead>
-                            <tr>
-                                <th>Factor</th>
-                                <th>Description</th>
-                                <th class="text-center">Weight</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>E1</td>
-                                <td>Familiarity with Project</td>
-                                <td class="text-center">1.5</td>
-                            </tr>
-                            <tr>
-                                <td>E2</td>
-                                <td>Application Experience</td>
-                                <td class="text-center">0.5</td>
-                            </tr>
-                            <tr>
-                                <td>E3</td>
-                                <td>Object-Oriented Experience</td>
-                                <td class="text-center">1.0</td>
-                            </tr>
-                            <tr>
-                                <td>E4</td>
-                                <td>Lead Analyst Capability</td>
-                                <td class="text-center">0.5</td>
-                            </tr>
-                            <tr>
-                                <td>E5</td>
-                                <td>Motivation</td>
-                                <td class="text-center">1.0</td>
-                            </tr>
-                            <tr>
-                                <td>E6</td>
-                                <td>Stable Requirements</td>
-                                <td class="text-center">2.0</td>
-                            </tr>
-                            <tr>
-                                <td>E7</td>
-                                <td>Part-Time Staff</td>
-                                <td class="text-center">-1.0</td>
-                            </tr>
-                            <tr>
-                                <td>E8</td>
-                                <td>Difficult Programming Language</td>
-                                <td class="text-center">-1.0</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                
                 <div class="note-block">
                     <i class="bi bi-info-circle-fill me-2"></i>
-                    <strong>Note on Productivity Factor:</strong> The productivity factor (hours per UCP) typically ranges from 20-28 hours per UCP. This can be calibrated based on historical data from your organization.
+                    <strong>Simplified Effort Estimation:</strong> In the current implementation, we use a fixed productivity factor of 20 hours per UCP for all projects. This simplification makes the estimation process more straightforward while still providing a reasonable basis for project planning.
+                </div>
+                
+                <div class="mt-4">
+                    <h5>Benefits of the Simplified UCP Method</h5>
+                    <ul class="benefits-list mt-3">
+                        <li><i class="bi bi-check-circle-fill benefit-icon"></i> More straightforward calculation with fewer variables</li>
+                        <li><i class="bi bi-check-circle-fill benefit-icon"></i> Focus on core technical factors that affect development complexity</li>
+                        <li><i class="bi bi-check-circle-fill benefit-icon"></i> Consistent productivity factor for more predictable estimates</li>
+                        <li><i class="bi bi-check-circle-fill benefit-icon"></i> Easier to apply across different project types</li>
+                        <li><i class="bi bi-check-circle-fill benefit-icon"></i> Reduced subjectivity in the estimation process</li>
+                    </ul>
+                </div>
+                
+                <div class="alert alert-info mt-4">
+                    <strong>Formula Summary:</strong>
+                    <ul class="mb-0">
+                        <li>UCP = (UUCW + UAW) × VAF</li>
+                        <li>VAF = 0.65 + (0.01 × TDI)</li>
+                        <li>Effort = UCP × 20 hours</li>
+                    </ul>
                 </div>
             </div>
         </div>

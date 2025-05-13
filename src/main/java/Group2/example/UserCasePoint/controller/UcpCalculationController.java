@@ -101,63 +101,50 @@ public class UcpCalculationController {
         model.addAttribute("calculation", calculation);
         model.addAttribute("technicalFactors", technicalFactors);
         return "calculations/technical-factors";
-    }
-
-    @PostMapping("/{id}/technical-factors")
+    }    @PostMapping("/{id}/technical-factors")
     public String updateTechnicalFactors(@PathVariable Long projectId,
                                        @PathVariable Long id,
-                                       @RequestParam("score") int[] scores,
+                                       @ModelAttribute TechnicalFactorWrapper wrapper,
                                        RedirectAttributes redirectAttributes) {
         // Ensure the calculation exists before proceeding
         ucpCalculationService.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Invalid calculation ID: " + id));
         
-        List<TechnicalFactor> technicalFactors = technicalFactorRepository.findByCalculationId(id);
-        
-        for (int i = 0; i < technicalFactors.size() && i < scores.length; i++) {
-            technicalFactors.get(i).setScore(scores[i]);
+        if (wrapper != null && wrapper.getTechnicalFactors() != null) {
+            ucpCalculationService.updateTechnicalFactors(id, wrapper.getTechnicalFactors());
+            redirectAttributes.addFlashAttribute("successMessage", "Technical factors updated successfully!");
+        } else {
+            redirectAttributes.addFlashAttribute("errorMessage", "No technical factors were submitted. Please try again.");
         }
         
-        ucpCalculationService.updateTechnicalFactors(id, technicalFactors);
-        redirectAttributes.addFlashAttribute("successMessage", "Technical factors updated successfully!");
-        return "redirect:/projects/" + projectId + "/calculations/" + id + "/environmental-factors";
+        // Chuyển thẳng đến tính toán thay vì qua environmental factors
+        return "redirect:/projects/" + projectId + "/calculations/" + id + "/calculate";
     }
 
+    /**
+     * @deprecated Environmental factors không còn được sử dụng trong công thức UCP mới 
+     */
+    @Deprecated
     @GetMapping("/{id}/environmental-factors")
     public String editEnvironmentalFactorsForm(@PathVariable Long projectId,
                                              @PathVariable Long id,
-                                             Model model) {
-        Project project = projectService.findById(projectId)
-            .orElseThrow(() -> new IllegalArgumentException("Invalid project ID: " + projectId));
-        
-        UcpCalculation calculation = ucpCalculationService.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Invalid calculation ID: " + id));
-        
-        List<EnvironmentalFactor> environmentalFactors = environmentalFactorRepository.findByCalculationId(id);
-        
-        model.addAttribute("project", project);
-        model.addAttribute("calculation", calculation);
-        model.addAttribute("environmentalFactors", environmentalFactors);
-        return "calculations/environmental-factors";
+                                             RedirectAttributes redirectAttributes) {
+        // Chuyển thẳng đến tính toán
+        redirectAttributes.addFlashAttribute("infoMessage", "Environmental factors are not used in the new UCP formula.");
+        return "redirect:/projects/" + projectId + "/calculations/" + id + "/calculate";
     }
 
+    /**
+     * @deprecated Environmental factors không còn được sử dụng trong công thức UCP mới
+     */
+    @Deprecated
     @PostMapping("/{id}/environmental-factors")
     public String updateEnvironmentalFactors(@PathVariable Long projectId,
                                            @PathVariable Long id,
-                                           @RequestParam("score") int[] scores,
+                                           @RequestParam(value = "score", required = false) int[] scores,
                                            RedirectAttributes redirectAttributes) {
-        // Ensure the calculation exists before proceeding
-        ucpCalculationService.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Invalid calculation ID: " + id));
-        
-        List<EnvironmentalFactor> environmentalFactors = environmentalFactorRepository.findByCalculationId(id);
-        
-        for (int i = 0; i < environmentalFactors.size() && i < scores.length; i++) {
-            environmentalFactors.get(i).setScore(scores[i]);
-        }
-        
-        ucpCalculationService.updateEnvironmentalFactors(id, environmentalFactors);
-        redirectAttributes.addFlashAttribute("successMessage", "Environmental factors updated successfully!");
+        // Chuyển thẳng đến tính toán
+        redirectAttributes.addFlashAttribute("infoMessage", "Environmental factors are not used in the new UCP formula.");
         return "redirect:/projects/" + projectId + "/calculations/" + id + "/calculate";
     }
 

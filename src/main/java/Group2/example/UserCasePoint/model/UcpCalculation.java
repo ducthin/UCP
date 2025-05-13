@@ -27,30 +27,35 @@ public class UcpCalculation {
     private double uaw;
     
     // Unadjusted Use Case Weight
-    private double uucw;
-    
-    // Unadjusted Use Case Points (UUCW + UAW)
+    private double uucw;    // Unadjusted Use Case Points (UUCW + UAW)
     private double uucp;
     
-    // Technical Factor Total
-    private double tf;
+    // Total Degree of Influence (TDI) - sum of 14 technical factors
+    private double tdi;
     
-    // Technical Complexity Factor (0.6 + (0.01 × TF))
-    private double tcf;
+    // Value Adjustment Factor (VAF = 0.65 + (0.01 × TDI))
+    private double vaf;
     
-    // Environmental Factor Total
-    private double ef;
-    
-    // Environmental Complexity Factor (1.4 + (-0.03 × EF))
-    private double ecf;
-    
-    // Use Case Points (UUCP × TCF × ECF)
+    // Use Case Points (UCP = (UUCW + UAW) × VAF)
     private double ucp;
     
-    // Productivity Factor (hours/UCP)
+    // For backward compatibility
+    @Deprecated
+    private double tf;
+    
+    @Deprecated
+    private double tcf;
+    
+    @Deprecated
+    private double ef;
+    
+    @Deprecated
+    private double ecf;
+    
+    @Deprecated
     private double productivityFactor;
     
-    // Estimated Effort in hours (UCP * productivityFactor)
+    // Estimated Effort in hours (can be calculated separately if needed)
     private double estimatedEffort;
     
     // Actual Effort in hours
@@ -67,20 +72,77 @@ public class UcpCalculation {
     @OneToMany(mappedBy = "calculation", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference(value = "calculation-environmental-factors")
     private List<EnvironmentalFactor> environmentalFactors = new ArrayList<>();
-    
-    @PrePersist
+      @PrePersist
     protected void onCreate() {
         calculationDate = LocalDateTime.now();
     }
     
-    // Calculate productivity factor based on Environmental Significance (ES)
-    public int calculateProductivityFactor(int environmentalSignificance) {
-        if (environmentalSignificance < 1) {
-            return 48;  // hours/UCP
-        } else if (environmentalSignificance < 3) {
-            return 32;  // hours/UCP
-        } else {
-            return 20;  // hours/UCP
-        }
+    // Getter and setter for TDI
+    public double getTdi() {
+        return tdi;
+    }
+    
+    public void setTdi(double tdi) {
+        this.tdi = tdi;
+    }
+    
+    // Getter and setter for VAF
+    public double getVaf() {
+        return vaf;
+    }
+    
+    public void setVaf(double vaf) {
+        this.vaf = vaf;
+    }
+    
+    // Legacy getters and setters for backward compatibility
+    @Deprecated
+    public void setTf(double tf) {
+        this.tf = tf;
+    }
+    
+    @Deprecated
+    public double getTf() {
+        return tf;
+    }
+    
+    @Deprecated
+    public void setTcf(double tcf) {
+        this.tcf = tcf;
+    }
+    
+    @Deprecated
+    public double getTcf() {
+        return tcf;
+    }
+    
+    @Deprecated
+    public void setEf(double ef) {
+        this.ef = ef;
+    }
+    
+    @Deprecated
+    public double getEf() {
+        return ef;
+    }
+    
+    @Deprecated
+    public void setEcf(double ecf) {
+        this.ecf = ecf;
+    }
+    
+    @Deprecated
+    public double getEcf() {
+        return ecf;
+    }
+    
+    @Deprecated
+    public void setProductivityFactor(double productivityFactor) {
+        this.productivityFactor = productivityFactor;
+    }
+    
+    @Deprecated
+    public double getProductivityFactor() {
+        return productivityFactor;
     }
 }

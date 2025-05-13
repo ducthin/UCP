@@ -3,129 +3,165 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}">
 <head>
-    <title>UCP Calculator - Dashboard</title>
-    <style>
-        /* Simplified styles */
-        .dashboard-card {
-            height: 100%;
-            border: 1px solid #ddd;
+    <title>UCP Calculator - Dashboard</title>    <style>
+        .dashboard-header {
+            background-color: #f8f9fa;
+            color: #333;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #dee2e6;
         }
-        .stat-card {
-            text-align: center;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            background-color: #cdcdcd;
-        }
-        .stat-card .stat-icon {
-            font-size: 1.2rem;
+        .dashboard-header h1 {
+            font-weight: 600;
             margin-bottom: 0.5rem;
         }
+        .dashboard-header p {
+            max-width: 600px;
+        }
+        .stat-card {
+            padding: 1rem;
+            height: 100%;
+            border: 1px solid #dee2e6;
+            background: white;
+        }
+        .stat-card .stat-icon {
+            height: 40px;
+            width: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
         .stat-card .stat-value {
-            font-size: 1.8rem;
-            font-weight: 500;
-            margin-bottom: 0.2rem;
+            font-size: 1.75rem;
+            font-weight: 600;
+            line-height: 1;
+            margin-bottom: 0.25rem;
         }
         .stat-card .stat-label {
-            font-size: 0.9rem;
-            color: #666;
-        }
-        .welcome-section {
-            background-color: #f9f9f9;
-            padding: 1.2rem;
-            margin-bottom: 1.2rem;
-        }
-        .chart-container {
-            position: relative;
-            height: 280px;
-            width: 100%;
-        }
-        /* Table styles */
-        .table {
-            margin-bottom: 0;
-        }
-        .card-header {
-            background-color: #f5f5f5;
-            padding: 0.75rem 1rem;
-        }
-        .card-footer {
-            background-color: #f5f5f5;
-            padding: 0.75rem 1rem;
-        }
-        /* Buttons */
-        .btn {
-            padding: 0.375rem 0.75rem;
-            border-radius: 3px;
-        }
-        .btn-sm {
-            padding: 0.25rem 0.5rem;
             font-size: 0.875rem;
+            color: #6c757d;
+            font-weight: 500;
+        }
+        .stat-card .stat-change {
+            margin-top: 0.75rem;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+        }
+        .table-card {
+            border: 1px solid #dee2e6;
+            height: 100%;
+        }
+        .table-card .card-header {
+            background-color: white;
+            border-bottom: 1px solid #dee2e6;
+            padding: 0.75rem 1rem;
+        }
+        .badge-count {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            background-color: #f8f9fa;
+            color: #333;
         }
     </style>
 </head>
 <body>
-    <div layout:fragment="content">
-        <div class="row mb-4">
-            <div class="col-md-12">                
-                <div class="welcome-section">
-                    <h2 class="mb-3">UCP Calculator</h2>
+    <div layout:fragment="content">        <!-- Welcome Header -->
+        <div class="dashboard-header">
+            <div class="row align-items-center">
+                <div class="col-md-10">
+                    <h1>UCP Calculator Dashboard</h1>
+                    <p class="mb-0">Estimate software development effort using the Use Case Points method.</p>
+                    
                     <div class="mt-3">
-                        <a href="/projects/create" class="btn btn-primary me-2">
-                            <i class="bi bi-plus-circle"></i> New Project
+                        <a href="/projects/create" class="btn btn-primary">
+                            <i class="bi bi-plus-circle me-1"></i> New Project
                         </a>
-                        <a href="/about" class="btn btn-outline-secondary">
-                            <i class="bi bi-info-circle"></i> About UCP
+                        <a href="/about" class="btn btn-outline-secondary ms-2">
+                            <i class="bi bi-info-circle me-1"></i> About UCP
                         </a>
                     </div>
                 </div>
-            </div>
-        </div>
-        
-        <!-- Stats Cards -->
-        <div class="row mb-4">
-            <div class="col-xl-3 col-md-6 mb-4">                
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="bi bi-folder"></i>
-                    </div>
-                    <div class="stat-value" th:text="${projectCount}">0</div>
-                    <div class="stat-label">Projects</div>
+                <div class="col-md-2 d-none d-md-block text-end">
+                    <i class="bi bi-calculator" style="font-size: 2.5rem;"></i>
                 </div>
             </div>
-            <div class="col-xl-3 col-md-6 mb-4">                
+        </div><!-- Stats Cards -->
+        <div class="row g-3 mb-4">            
+            <div class="col-xl-3 col-md-6">                
                 <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="bi bi-person"></i>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="stat-label">Total Projects</div>
+                            <div class="stat-value" th:text="${projectCount}">0</div>
+                        </div>
+                        <div class="stat-icon">
+                            <i class="bi bi-folder"></i>
+                        </div>
                     </div>
-                    <div class="stat-value" th:text="${actorCount}">0</div>
-                    <div class="stat-label">Actors</div>
+                    <div class="stat-change" th:unless="${projectCount > 0}">
+                        No projects yet
+                    </div>
                 </div>
             </div>
-            <div class="col-xl-3 col-md-6 mb-4">                
+            <div class="col-xl-3 col-md-6">                
                 <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="bi bi-file-earmark-text"></i>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="stat-label">Total Actors</div>
+                            <div class="stat-value" th:text="${actorCount}">0</div>
+                        </div>
+                        <div class="stat-icon">
+                            <i class="bi bi-person"></i>
+                        </div>
                     </div>
-                    <div class="stat-value" th:text="${useCaseCount}">0</div>
-                    <div class="stat-label">Use Cases</div>
+                    <div class="stat-change" th:unless="${actorCount > 0}">
+                        No actors defined
+                    </div>
+                </div>
+            </div>            
+            <div class="col-xl-3 col-md-6">                
+                <div class="stat-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="stat-label">Total Use Cases</div>
+                            <div class="stat-value" th:text="${useCaseCount}">0</div>
+                        </div>
+                        <div class="stat-icon">
+                            <i class="bi bi-file-earmark-text"></i>
+                        </div>
+                    </div>
+                    <div class="stat-change" th:unless="${useCaseCount > 0}">
+                        No use cases defined
+                    </div>
                 </div>
             </div>
-            <div class="col-xl-3 col-md-6 mb-4">                
+            <div class="col-xl-3 col-md-6">                
                 <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="bi bi-calculator"></i>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="stat-label">Calculations</div>
+                            <div class="stat-value" th:text="${calculationCount}">0</div>
+                        </div>
+                        <div class="stat-icon">
+                            <i class="bi bi-calculator"></i>
+                        </div>
                     </div>
-                    <div class="stat-value" th:text="${calculationCount}">0</div>
-                    <div class="stat-label">Calculations</div>
+                    <div class="stat-change" th:unless="${calculationCount > 0}">
+                        No calculations yet
+                    </div>
                 </div>
             </div>
-        </div>
-        
-        <div class="row">
+        </div>        <div class="row g-3">
             <!-- Recent Projects -->
-            <div class="col-lg-6 mb-4">                
-                <div class="card dashboard-card h-100">
+            <div class="col-lg-6 mb-4">                  
+                <div class="card h-100">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">Recent Projects</h5>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">Recent Projects</h5>
+                            <a href="/projects" class="btn btn-sm btn-outline-secondary">View All</a>
+                        </div>
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
@@ -137,40 +173,51 @@
                                         <th>Actions</th>
                                     </tr>
                                 </thead>                               
-                                 <tbody>
+                                <tbody>
                                     <tr th:if="${recentProjects.empty}">
-                                        <td colspan="3" class="text-center text-muted">No projects available</td>
+                                        <td colspan="3" class="text-center py-4 text-muted">
+                                            <i class="bi bi-folder-plus mb-2" style="font-size: 2rem;"></i>
+                                            <p class="mb-0">No projects available</p>
+                                        </td>
                                     </tr>
                                     <tr th:each="project : ${recentProjects}">
-                                        <td th:text="${project.name}">Project Name</td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="icon-circle bg-light me-2">
+                                                    <i class="bi bi-folder text-primary"></i>
+                                                </div>
+                                                <span th:text="${project.name}">Project Name</span>
+                                            </div>
+                                        </td>
                                         <td th:text="${#strings.abbreviate(project.description, 50)}">Description</td>
-                                        <td>                                            
-                                            <a th:href="@{/projects/{id}(id=${project.id})}" class="btn btn-sm btn-outline-primary me-1">
-                                                <i class="bi bi-eye"></i>
-                                            </a>
-                                            <a th:href="@{/projects/{id}/actors(id=${project.id})}" class="btn btn-sm btn-outline-secondary me-1">
-                                                <i class="bi bi-person"></i>
-                                            </a>
-                                            <a th:href="@{/projects/{id}/usecases(id=${project.id})}" class="btn btn-sm btn-outline-secondary">
-                                                <i class="bi bi-file-text"></i>
-                                            </a>
+                                        <td>                                              <div class="btn-group btn-group-sm">
+                                                <a th:href="@{/projects/{id}(id=${project.id})}" class="btn btn-outline-secondary">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                <a th:href="@{/projects/{id}/actors(id=${project.id})}" class="btn btn-outline-secondary">
+                                                    <i class="bi bi-person"></i>
+                                                </a>
+                                                <a th:href="@{/projects/{id}/usecases(id=${project.id})}" class="btn btn-outline-secondary">
+                                                    <i class="bi bi-file-text"></i>
+                                                </a>
+                                            </div>
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
-                    </div>                    
-                    <div class="card-footer">
-                        <a th:href="@{/projects}" class="btn btn-sm btn-primary">All Projects</a>
                     </div>
                 </div>
             </div>
             
             <!-- Recent Calculations -->
-            <div class="col-lg-6 mb-4">                
-                <div class="card dashboard-card h-100">
+            <div class="col-lg-6 mb-4">                  
+                <div class="card h-100">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">Recent UCP Calculations</h5>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">Recent UCP Calculations</h5>
+                            <a href="/projects" class="btn btn-sm btn-outline-secondary">View All</a>
+                        </div>
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
@@ -185,85 +232,65 @@
                                 </thead>                                
                                 <tbody>
                                     <tr th:if="${recentCalculations.empty}">
-                                        <td colspan="4" class="text-center text-muted">No calculations available</td>
-                                    </tr>                                    <tr th:each="calc : ${recentCalculations}">
-                                        <td th:text="${calc.project.name}">Project Name</td>
-                                        <td th:text="${#numbers.formatDecimal(calc.ucp, 1, 2)}">0.00</td>
-                                        <td th:text="${#temporals.format(calc.calculationDate, 'dd MMM yyyy')}">Date</td>                                        <td>
-                                            <a th:href="@{/projects/{projectId}/calculations/{id}(projectId=${calc.project.id}, id=${calc.id})}" class="btn btn-sm btn-outline-primary">
-                                                <i class="bi bi-eye"></i>
+                                        <td colspan="4" class="text-center py-4 text-muted">
+                                            <i class="bi bi-calculator mb-2" style="font-size: 2rem;"></i>
+                                            <p class="mb-0">No calculations available</p>
+                                        </td>
+                                    </tr>
+                                    <tr th:each="calc : ${recentCalculations}">
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="icon-circle bg-light me-2">
+                                                    <i class="bi bi-calculator text-info"></i>
+                                                </div>
+                                                <span th:text="${calc.project.name}">Project Name</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="fw-bold" th:text="${#numbers.formatDecimal(calc.ucp, 1, 2)}">0.00</span>
+                                        </td>
+                                        <td th:text="${#temporals.format(calc.calculationDate, 'dd MMM yyyy')}">Date</td>                                       
+                                        <td>                                            
+                                            <a th:href="@{/projects/{projectId}/calculations/{id}(projectId=${calc.project.id}, id=${calc.id})}" class="btn btn-sm btn-outline-secondary">
+                                                <i class="bi bi-eye"></i> View
                                             </a>
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
-                    </div>                    
-                    <div class="card-footer">
-                        <a href="/projects" class="btn btn-sm btn-primary">All Calculations</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    
-    <!-- Page specific scripts -->
+      <!-- Page specific scripts -->
     <th:block layout:fragment="scripts">
         <script th:inline="javascript">
-            // Access the calculations data from Thymeleaf
-            const calculations = /*[[${recentCalculations}]]*/ [];
-            
-            // Prepare data for the chart
-            const projectNames = calculations.map(calc => calc.project.name);
-            const ucpValues = calculations.map(calc => calc.ucp);
-            
-            // Create chart
+            // Style icons when the DOM is loaded
             document.addEventListener('DOMContentLoaded', function() {
-                const ctx = document.getElementById('ucpChart').getContext('2d');
+                // Style action icons
+                const actionIcons = document.querySelectorAll('.action-icon');
+                actionIcons.forEach(icon => {
+                    icon.style.width = '36px';
+                    icon.style.height = '36px';
+                    icon.style.borderRadius = '8px';
+                    icon.style.display = 'flex';
+                    icon.style.alignItems = 'center';
+                    icon.style.justifyContent = 'center';
+                    icon.style.fontSize = '1rem';
+                });
                 
-                new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: projectNames.length > 0 ? projectNames : ['No Data Available'],
-                        datasets: [{
-                            label: 'UCP Value',
-                            data: ucpValues.length > 0 ? ucpValues : [0],                            
-                            backgroundColor: 'rgba(78, 115, 223, 0.4)',
-                            borderColor: 'rgba(78, 115, 223, 0.7)',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                title: {
-                                    display: true,
-                                    text: 'UCP Value'
-                                }
-                            },
-                            x: {
-                                title: {
-                                    display: true,
-                                    text: 'Projects'
-                                }
-                            }
-                        },                        
-                        plugins: {
-                            title: {
-                                display: true,
-                                text: 'UCP by Project',
-                                font: {
-                                    size: 14
-                                }
-                            },
-                            legend: {
-                                display: false
-                            }
-                        }
-                    }
+                // Style icon circles
+                const iconCircles = document.querySelectorAll('.icon-circle');
+                iconCircles.forEach(icon => {
+                    icon.style.width = '28px';
+                    icon.style.height = '28px';
+                    icon.style.borderRadius = '50%';
+                    icon.style.display = 'flex';
+                    icon.style.alignItems = 'center';
+                    icon.style.justifyContent = 'center';
+                    icon.style.fontSize = '0.875rem';
                 });
             });
         </script>
