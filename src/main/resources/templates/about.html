@@ -183,11 +183,10 @@
                                 <span class="step-number">5</span>
                                 <span class="fw-bold">Calculate UCP</span>
                                 <div class="mt-2">UCP = (UUCW + UAW) × Value Adjustment Factor (VAF)</div>
-                            </div>
-                            <div class="step-box">
+                            </div>                            <div class="step-box">
                                 <span class="step-number">6</span>
                                 <span class="fw-bold">Estimate Effort</span>
-                                <div class="mt-2">Effort (hours) = UCP × 20 hours per UCP</div>
+                                <div class="mt-2">Effort (hours) = UCP × PF (where PF is the customizable Productivity Factor)</div>
                             </div>
                         </div>
                           <h3 class="section-title mt-4">Key Formulas in UCP</h3>
@@ -356,10 +355,9 @@
             <div class="section-header">
                 <h3 class="mb-0">Effort Estimation</h3>
             </div>
-            <div class="section-content">
-                <div class="note-block">
+            <div class="section-content">                <div class="note-block">
                     <i class="bi bi-info-circle-fill me-2"></i>
-                    <strong>Simplified Effort Estimation:</strong> In the current implementation, we use a fixed productivity factor of 20 hours per UCP for all projects. This simplification makes the estimation process more straightforward while still providing a reasonable basis for project planning.
+                    <strong>Customizable Effort Estimation:</strong> You can set a custom productivity factor (hours per UCP) for each calculation. The default value is 20 hours per UCP, but this can be adjusted based on team experience, project complexity, and other factors. Typical values range from 15-30 hours per UCP.
                 </div>
                 
                 <div class="mt-4">
@@ -372,13 +370,12 @@
                         <li><i class="bi bi-check-circle-fill benefit-icon"></i> Reduced subjectivity in the estimation process</li>
                     </ul>
                 </div>
-                
-                <div class="alert alert-info mt-4">
+                  <div class="alert alert-info mt-4">
                     <strong>Formula Summary:</strong>
                     <ul class="mb-0">
                         <li>UCP = (UUCW + UAW) × VAF</li>
                         <li>VAF = 0.65 + (0.01 × TDI)</li>
-                        <li>Effort = UCP × 20 hours</li>
+                        <li>Effort = UCP × PF hours (where PF is the Productivity Factor)</li>
                     </ul>
                 </div>
             </div>

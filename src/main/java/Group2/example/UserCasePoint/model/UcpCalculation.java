@@ -60,7 +60,7 @@ public class UcpCalculation {
     
     // Actual Effort in hours
     private Double actualEffort;
-      @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")
     @JsonBackReference(value = "project-calculations")
     private Project project;

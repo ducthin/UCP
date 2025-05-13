@@ -105,13 +105,17 @@ public class UcpCalculationController {
     public String updateTechnicalFactors(@PathVariable Long projectId,
                                        @PathVariable Long id,
                                        @ModelAttribute TechnicalFactorWrapper wrapper,
+                                       @RequestParam(defaultValue = "20.0") Double productivityFactor,
                                        RedirectAttributes redirectAttributes) {
         // Ensure the calculation exists before proceeding
-        ucpCalculationService.findById(id)
+        UcpCalculation calculation = ucpCalculationService.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Invalid calculation ID: " + id));
         
         if (wrapper != null && wrapper.getTechnicalFactors() != null) {
             ucpCalculationService.updateTechnicalFactors(id, wrapper.getTechnicalFactors());
+            // Save the productivity factor
+            calculation.setProductivityFactor(productivityFactor);
+            ucpCalculationService.save(calculation);
             redirectAttributes.addFlashAttribute("successMessage", "Technical factors updated successfully!");
         } else {
             redirectAttributes.addFlashAttribute("errorMessage", "No technical factors were submitted. Please try again.");

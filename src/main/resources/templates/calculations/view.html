@@ -119,10 +119,9 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-6">
-                                <h5>Estimated Effort:</h5>
+                            <div class="col-md-6">                                <h5>Estimated Effort:</h5>
                                 <p class="mb-3 fs-4" th:text="${calculation.estimatedEffort != null ? #numbers.formatDecimal(calculation.estimatedEffort, 1, 2) + ' hours' : 'N/A'}">0.00 hours</p>
-                                <small class="text-muted">UCP × 20 hours</small>
+                                <small class="text-muted">UCP × <span th:text="${calculation.productivityFactor != null ? calculation.productivityFactor : '20'}">20</span> hours</small>
                             </div>
                             <div class="col-md-6">
                                 <h5>Actual Effort:</h5>

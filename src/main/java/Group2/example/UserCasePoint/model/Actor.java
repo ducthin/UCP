@@ -21,7 +21,7 @@ public class Actor {
     private ActorType type;
     
     private int weight;
-      @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")
     @JsonBackReference(value = "project-actors")
     private Project project;

@@ -71,7 +71,7 @@
                                 <li>UUCW + UAW: <span th:text="${calculation.uucw != null && calculation.uaw != null ? #numbers.formatDecimal(calculation.uucw + calculation.uaw, 1, 2) : 'N/A'}"></span></li>
                                 <li>VAF: <span th:text="${calculation.tcf != null ? #numbers.formatDecimal(calculation.tcf, 1, 2) : 'N/A'}"></span></li>
                                 <li>UCP: <span th:text="${calculation.ucp != null ? #numbers.formatDecimal(calculation.ucp, 1, 2) : 'N/A'}"></span></li>
-                                <li>Productivity: <span>20 hours/UCP</span></li>
+                                <li>Productivity: <span th:text="${calculation.productivityFactor != null ? calculation.productivityFactor + ' hours/UCP' : '20 hours/UCP'}">20 hours/UCP</span></li>
                             </ul>
                         </div>
                         

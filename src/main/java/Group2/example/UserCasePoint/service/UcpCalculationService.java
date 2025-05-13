@@ -109,14 +109,19 @@ public class UcpCalculationService {
         
         // Calculate VAF (Value Adjustment Factor) theo công thức: VAF = 0.65 + (0.01 × TDI)
         double vaf = 0.65 + (0.01 * tdi);
-        calculation.setVaf(vaf);
-
-        // Calculate UCP theo công thức: UCP = (UUCW + UAW) × VAF
+        calculation.setVaf(vaf);        // Calculate UCP theo công thức: UCP = (UUCW + UAW) × VAF
         double ucp = uucp * vaf;
         calculation.setUcp(ucp);
         
-        // Ước tính nỗ lực
-        double estimatedEffort = ucp * 20; // Sử dụng hệ số 20 giờ/UCP đơn giản
+        // Lấy hệ số năng suất từ người dùng nhập vào, nếu chưa có thì mặc định là 20
+        Double productivityFactor = calculation.getProductivityFactor();
+        if (productivityFactor == null) {
+            productivityFactor = 20.0;
+            calculation.setProductivityFactor(productivityFactor);
+        }
+        
+        // Ước tính nỗ lực sử dụng hệ số năng suất tùy chỉnh
+        double estimatedEffort = ucp * productivityFactor;
         calculation.setEstimatedEffort(estimatedEffort);
 
         // Các giá trị cũ không còn sử dụng - chỉ đặt giá trị mặc định để tránh lỗi
@@ -124,7 +129,6 @@ public class UcpCalculationService {
         calculation.setTcf(0.6);
         calculation.setEf(0);
         calculation.setEcf(1.4);
-        calculation.setProductivityFactor(20);
 
         // Lưu và trả về kết quả
         return ucpCalculationRepository.save(calculation);
@@ -191,5 +195,10 @@ public class UcpCalculationService {
         UcpCalculation calculation = ucpCalculationRepository.findById(calculationId)
                 .orElseThrow(() -> new IllegalArgumentException("Calculation not found"));
         return calculation; // Không làm gì cả, chỉ trả về calculation
+    }
+
+    @Transactional
+    public UcpCalculation save(UcpCalculation calculation) {
+        return ucpCalculationRepository.save(calculation);
     }
 }

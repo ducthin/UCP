@@ -22,7 +22,7 @@ public class UseCase {
     
     private int transactionCount;
     private int weight;
-      @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")
     @JsonBackReference(value = "project-usecases")
     private Project project;
